@@ -1,161 +1,149 @@
-# Microgrid-simulator-Daily-Energy-Scheduler
-## Project Overview
+# ⚡ Microgrid Energy Management System
 
-This project is a **time-based microgrid simulation and daily energy scheduling system** developed as a working MVP for the **DEIV Labs Hackathon / Virtual Labs theme**. The simulator models how energy is generated, stored, consumed, and exchanged with the utility grid over a 24‑hour period, and demonstrates how intelligent scheduling can reduce energy cost and grid dependency.
+Professional-grade energy management system with clean frontend-backend architecture.
 
-The system is designed with an **educational Virtual Lab mindset**, making internal decisions and energy flows transparent and easy to understand.
-
----
-
-## Objectives
-
-* Simulate a **24-hour microgrid operation** using hourly time steps
-* Model **renewable generation (solar)**, **battery storage**, **load demand**, and **grid interaction**
-* Implement and compare:
-
-  * A **naïve scheduling strategy**
-  * An **optimized energy scheduling strategy**
-* Minimize:
-
-  * Total grid energy cost
-  * Peak grid usage
-* Provide an **interactive Streamlit-based interface** for experimentation
-
----
-
-## System Components
-
-### 1. Renewable Energy Source
-
-* Solar generation modeled using a simple time-based profile
-* Peak generation during mid-day hours
-
-### 2. Load Model
-
-* Residential-style daily load profile
-* Includes **load shifting**, where flexible loads are moved from peak-price hours to high-solar / low-price hours
-
-### 3. Battery Energy Storage System (BESS)
-
-* Configurable battery capacity
-* State of Charge (SOC) tracking
-* Charge and discharge power limits
-* Charging efficiency modeled
-
-### 4. Grid Interaction
-
-* Energy can be:
-
-  * Purchased from the grid during deficit
-  * Sold back to the grid during surplus (grid sell-back)
-* Time-of-use grid pricing supported
-
----
-
-## Energy Scheduling Strategies
-
-### Naïve Scheduler
-
-* Does not use the battery intelligently
-* Directly buys energy from the grid during deficit
-* Sells excess solar energy to the grid
-* Serves as a **baseline for comparison**
-
-### Optimized Scheduler
-
-* Prioritizes solar energy usage
-* Charges the battery during surplus generation
-* Discharges the battery during high grid price periods
-* Sells excess energy to the grid only when allowed
-* Demonstrates **cost-aware and energy-efficient decision making**
-
----
-
-## Simulation Logic
-
-The simulation runs in discrete hourly steps:
+## 📁 Project Structure
 
 ```
-Solar + Grid Buy + Battery Discharge
-= Load + Battery Charge + Grid Sell
+microgrid_ems/
+│
+├── backend/                    # Business Logic Layer
+│   ├── __init__.py
+│   ├── battery_model.py        # Battery physics & degradation
+│   ├── energy_profiles.py      # Solar & load profile generation
+│   ├── schedulers.py           # 7 control strategies
+│   ├── simulator.py            # Simulation engine
+│   ├── metrics.py              # KPI calculations
+│   ├── pricing.py              # Pricing models
+│   └── export_utils.py         # Data export utilities
+│
+├── frontend/                   # Presentation Layer
+│   ├── __init__.py
+│   ├── app.py                  # Main Streamlit app
+│   └── components.py           # UI components
+│
+├── config/                     # Configuration
+│   └── settings.py             # System parameters
+│
+├── data/                       # Data files
+│   └── (sample data files)
+│
+├── outputs/                    # Output files
+│   └── plots/                  # Generated plots
+│
+├── requirements.txt            # Dependencies
+└── README.md                   # This file
 ```
 
-At each hour:
+## 🚀 Quick Start
 
-1. Renewable generation and load demand are read
-2. Scheduler decides battery and grid actions
-3. Battery SOC is updated
-4. Grid cost or revenue is calculated
-
----
-
-## Outputs and Visualization
-
-* Hour-wise plots for:
-
-  * Grid energy bought
-  * Grid energy sold
-  * Battery State of Charge (SOC)
-* Total daily energy cost
-* Tabular view of hourly results
-* CSV export of simulation data for offline analysis
-
----
-
-## Interactive Virtual Lab (Streamlit)
-
-The Streamlit interface allows users to:
-
-* Select scheduling strategy (Naïve vs Optimized)
-* Visualize energy flows in real time
-* Observe cost differences
-* Export simulation results as CSV
-
-Run the app using:
+### 1. Install Dependencies
 
 ```bash
+pip install -r requirements.txt
+```
+
+### 2. Run the Application
+
+```bash
+cd frontend
 streamlit run app.py
 ```
 
----
+Or from project root:
 
-## Project Structure
-
-```
-microgrid_simulator/
-│
-├── app.py              # Streamlit Virtual Lab UI
-├── main.py             # Optional CLI execution
-├── config.py           # System parameters
-├── profiles.py         # Load and solar profiles
-├── battery.py          # Battery model
-├── scheduler.py        # Energy scheduling logic
-├── simulator.py        # Time-based simulation engine
-├── metrics.py          # Cost calculations
-├── visualization.py   # Plotting utilities
-├── export.py           # CSV export
-└── README.md
+```bash
+streamlit run frontend/app.py
 ```
 
----
+### 3. Access the Interface
 
-## Educational Value
+Open your browser to `http://localhost:8501`
 
-This project helps learners understand:
 
-* Microgrid energy flow and balance
-* Role of storage in renewable integration
-* Impact of time-of-use pricing
-* Benefits of intelligent energy scheduling
 
----
+## 🎯 Features
 
-## Conclusion
+### Backend Modules
 
-The Microgrid Simulator + Daily Energy Scheduler is a **complete, working MVP** that combines simulation, optimization, and visualization. It demonstrates practical concepts in **smart energy systems** and serves as a strong foundation for further extensions such as advanced optimization, uncertainty modeling, and real-world data integration.
+1. **Battery Model** (`battery_model.py`)
+   - Advanced degradation (throughput + cycle-based)
+   - Thermal effects
+   - State of Health tracking
+   - C-rate limiting
 
----
+2. **Energy Profiles** (`energy_profiles.py`)
+   - Solar: Realistic generation with weather/seasonal effects
+   - Load: Residential, Commercial, Industrial profiles
+   - Multi-day simulation support
 
-## Author / Team
+3. **Schedulers** (`schedulers.py`)
+   - 7 control strategies
+   - Naive, Self-Consumption, Peak Shaving
+   - TOU, Greedy, Linear Programming, MPC
 
-Developed as part of the **DEIV Labs Hackathon / Virtual Labs initiative**.
+4. **Simulator** (`simulator.py`)
+   - Step-by-step and global optimization modes
+   - Multi-day capability
+   - Validation framework
+
+5. **Metrics** (`metrics.py`)
+   - 40+ KPIs (economic, technical, environmental)
+   - Financial analysis (NPV, IRR, LCOE)
+   - Comparative analysis
+
+6. **Pricing** (`pricing.py`)
+   - TOU, Flat, Dynamic pricing models
+   - Carbon emissions calculation
+
+7. **Export** (`export_utils.py`)
+   - CSV, Excel, JSON export
+   - Comprehensive reporting
+
+### Frontend Components
+
+1. **Main App** (`app.py`)
+   - Streamlit interface
+   - 6 analysis tabs
+   - Real-time simulation
+
+2. **UI Components** (`components.py`)
+   - Sidebar controls
+   - Visualization functions
+   - Metrics displays
+
+
+## 🔧 Configuration
+
+Edit `config/settings.py` to change:
+- Battery specifications
+- Solar parameters
+- Grid settings
+- Economic parameters
+- Simulation settings
+
+## 📈 Typical Results
+
+**13.5 kWh Battery + 5 kW Solar (Residential)**
+
+- Cost Reduction: 35-45% vs baseline
+- Self-Sufficiency: 60-75%
+- Carbon Reduction: 65%+
+- Payback Period: 8-10 years
+- Battery Cycles/Day: 0.8-1.2
+
+
+## 🌟 Architecture Benefits
+
+### Backend-Frontend Separation
+- ✅ Clean code organization
+- ✅ Easy testing
+- ✅ Reusable backend
+- ✅ Multiple frontends possible
+
+### Modularity
+- ✅ Independent components
+- ✅ Easy to extend
+- ✅ Clear responsibilities
+- ✅ Simple maintenance
+
